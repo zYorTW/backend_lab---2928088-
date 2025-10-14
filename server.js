@@ -9,9 +9,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-
 const authRoutes = require('./src/routes/auth');
 const solicitudesRoutes = require('./src/routes/solicitudes');
+const reactivosRoutes = require('./src/routes/reactivos');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +22,7 @@ app.use(express.json());
 // Rutas limpias y claras
 app.use('/api/auth', authRoutes);
 app.use('/api/solicitudes', solicitudesRoutes);
+app.use('/api/reactivos', reactivosRoutes);
 
 app.get('/', (req, res) => {
   res.type('text/plain').send('Hello from app-lab-back (express)!');

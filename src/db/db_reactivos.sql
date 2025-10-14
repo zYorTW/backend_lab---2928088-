@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS reactivos (
     codigo VARCHAR(10) NOT NULL,                   -- Código del reactivo
     nombre VARCHAR(200) NOT NULL,                  -- Nombre genérico
     marca VARCHAR(50) NOT NULL,                    -- Marca
-    referencia VARCHAR(100),                       -- referencia
-    cas VARCHAR (50),                              -- 
+    referencia VARCHAR(100),
+    cas VARCHAR (50),                              -- Referencia
     presentacion DECIMAL(10,2) NOT NULL,           -- Presentación (ej: 500 mL)
     presentacion_cant DECIMAL(10,2) NOT NULL,      -- Cuantas unidades
     cantidad_total DECIMAL(10,2) NOT NULL,         -- Total disponible (presentacion_cant x presentacion)
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS hoja_seguridad (
     contenido_pdf LONGBLOB,
 
     UNIQUE (codigo),
-    FOREIGN KEY (codigo) REFERENCES reactivos(codigo)
+    FOREIGN KEY (codigo) REFERENCES catalogo_reactivos(codigo)
 );
 
 CREATE TABLE IF NOT EXISTS cert_analisis (
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS cert_analisis (
     contenido_pdf LONGBLOB,
 
     UNIQUE (codigo),
-    FOREIGN KEY (codigo) REFERENCES reactivos(codigo)
+    FOREIGN KEY (codigo) REFERENCES catalogo_reactivos(codigo)
 );
 
 
