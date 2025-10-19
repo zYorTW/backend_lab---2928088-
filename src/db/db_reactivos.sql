@@ -85,8 +85,6 @@ CREATE TABLE IF NOT EXISTS reactivos (
     UNIQUE (codigo, lote) -- asegura que no se duplique lote para el mismo código
 );
 
-
-
 CREATE TABLE IF NOT EXISTS hoja_seguridad (
     id INT PRIMARY KEY AUTO_INCREMENT,
     codigo VARCHAR(10) NOT NULL,
@@ -155,104 +153,9 @@ CREATE TABLE materiales_volumetricos (
     observaciones TEXT
 );
 
--- Tablas para Insumos
-CREATE TABLE IF NOT EXISTS catalogo_insumos (
-    codigo VARCHAR(10) PRIMARY KEY,
-    nombre VARCHAR(200) NOT NULL,
-    tipo_insumo VARCHAR(50) NOT NULL,
-    categoria VARCHAR(100) NOT NULL,
-    descripcion TEXT,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS insumos (
-    lote VARCHAR(30) PRIMARY KEY,                  -- Identificador único por lote
-    codigo VARCHAR(10) NOT NULL,                   -- Código del insumo
-    nombre VARCHAR(200) NOT NULL,                  -- Nombre genérico
-    marca VARCHAR(50) NOT NULL,                    -- Marca
-    referencia VARCHAR(100),
-    presentacion DECIMAL(10,2) NOT NULL,           -- Presentación (ej: 500 mL)
-    presentacion_cant DECIMAL(10,2) NOT NULL,      -- Cuantas unidades
-    cantidad_total DECIMAL(10,2) NOT NULL,         -- Total disponible (presentacion_cant x presentacion)
-    fecha_adquisicion DATE NOT NULL,
-    fecha_vencimiento DATE,
-    observaciones TEXT,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    -- Foreign Keys (reutilizando las mismas tablas auxiliares)
-    tipo_id INT NOT NULL,
-    clasificacion_id INT NOT NULL,
-    unidad_id INT NOT NULL,
-    estado_id INT NOT NULL,
-    almacenamiento_id INT NOT NULL,
-    tipo_recipiente_id INT NOT NULL,
-
-    -- Relaciones
-    FOREIGN KEY (codigo) REFERENCES catalogo_insumos(codigo),
-    FOREIGN KEY (tipo_id) REFERENCES tipo_reactivo(id),
-    FOREIGN KEY (clasificacion_id) REFERENCES clasificacion_sga(id),
-    FOREIGN KEY (unidad_id) REFERENCES unidades(id),
-    FOREIGN KEY (estado_id) REFERENCES estado_fisico(id),
-    FOREIGN KEY (almacenamiento_id) REFERENCES almacenamiento(id),
-    FOREIGN KEY (tipo_recipiente_id) REFERENCES tipo_recipiente(id),
-
-    UNIQUE (codigo, lote) -- asegura que no se duplique lote para el mismo código
-);
-
-
 INSERT IGNORE INTO tipo_reactivo (nombre) VALUES ('Controlado'), ('No controlado');
 
-INSERT IGNORE INTO clasificacion_sga (nombre) VALUES 
-    ('Irritación cutánea y otros'),
-    ('Inflamables'),
-    ('Corrosivo'),
-    ('Peligro para la respiración'),
-    ('No peligro'),
-    ('Tóxico'),
-    ('Peligro para el medio ambiente'),
-    ('Comburente');
-
-INSERT IGNORE INTO unidades (nombre) VALUES ('mL'), ('g'), ('uL'), ('nmol'), ('umol'), ('mg'), ('Unidad');
-
-INSERT IGNORE INTO estado_fisico (nombre) VALUES ('Liquido'), ('Solido'), ('Viscoso'), ('Gas');
-
 INSERT IGNORE INTO tipo_recipiente (nombre) VALUES ('Vidrio'), ('Plástico'), ('Metalico');
-
-INSERT IGNORE INTO almacenamiento (nombre) VALUES 
-    ('Nevera Quimica- Nivel 1'),
-    ('Nevera Quimica- Nivel 2'),
-    ('Nevera Quimica- Nivel 3'),
-    ('Nevera Quimica- Nivel 4'),
-    ('Nevera Quimica- Nivel 5'),
-    ('Nevera Quimica- Nivel 6'),
-    ('Nevera Quimica (Puerta)'),
-    ('Nevera MB- Puerta Izquierda'),
-    ('Nevera MB- Medios Liquidos'),
-    ('Nevera MB- Puerta Derecha N2'),
-    ('Nevera MB- Puerta Derecha N4'),
-    ('Nevera MB-API'),
-    ('Gabinete Amarillo- Nivel 1'),
-    ('Gabinete Amarillo- Nivel 2'),
-    ('Gabinete Amarillo- Nivel 3'),
-    ('Gabinete Amarillo- Nivel 4'),
-    ('Gabinete Azul- Nivel 1'),
-    ('Gabinete Azul- Nivel 2'),
-    ('Gabinete Azul- Nivel 3'),
-    ('Gabinete Azul- Nivel 4'),
-    ('Gabinete Azul- Nivel 5'),
-    ('Estanteria B3- Nivel 1'),
-    ('Estanteria B3- Nivel 2'),
-    ('Estanteria B3- Nivel 3'),
-    ('Estanteria B3- Nivel 4'),
-    ('Estanteria B3- Nivel 5'),
-    ('Estanteria D1- Nivel 1'),
-    ('Estanteria D1- Nivel 2'),
-    ('Estanteria D1- Nivel 3'),
-    ('Estanteria D1- Nivel 4'),
-    ('Estanteria D1- Nivel 5');
-
 
 INSERT INTO catalogo_reactivos (codigo, nombre, tipo_reactivo, clasificacion_sga) VALUES
 ('R-001', 'Solucion Buffer pH 4', 'NO Controlado ', 'IRRITACIÓN CUTANEA Y OTROS '),
