@@ -109,6 +109,98 @@ CREATE TABLE IF NOT EXISTS cert_analisis (
     FOREIGN KEY (codigo) REFERENCES catalogo_reactivos(codigo)
 );
 
+USE lab;
+
+CREATE TABLE papeleria (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    cantidad_adquirida INT NOT NULL,
+    cantidad_existente INT NOT NULL,
+    presentacion ENUM('unidad', 'paquete', 'caja', 'cajas') NOT NULL,
+    marca VARCHAR(100),
+    descripcion TEXT,
+    fecha_adquisicion DATE,
+    ubicacion VARCHAR(100),
+    observaciones TEXT
+);
+
+CREATE TABLE insumos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    cantidad_adquirida INT NOT NULL,
+    cantidad_existente INT NOT NULL,
+    presentacion VARCHAR(50),
+    marca VARCHAR(100),
+    descripcion TEXT,
+    fecha_adquisicion DATE,
+    ubicacion VARCHAR(100),
+    observaciones TEXT
+);
+
+CREATE TABLE materiales_volumetricos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item INT NOT NULL,
+    nombre_material VARCHAR(100) NOT NULL,
+    clase VARCHAR(100),
+    marca VARCHAR(100),
+    referencia VARCHAR(100),
+    fecha_adquisicion DATE,
+    cantidad INT,
+    codigo_calibrado VARCHAR(100),
+    fecha_calibracion DATE,
+    codigo_en_uso VARCHAR(100),
+    codigo_fuera_de_uso VARCHAR(100),
+    observaciones TEXT
+);
+
+-- Tablas para Insumos
+CREATE TABLE IF NOT EXISTS catalogo_insumos (
+    codigo VARCHAR(10) PRIMARY KEY,
+    nombre VARCHAR(200) NOT NULL,
+    tipo_insumo VARCHAR(50) NOT NULL,
+    categoria VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS insumos (
+    lote VARCHAR(30) PRIMARY KEY,                  -- Identificador único por lote
+    codigo VARCHAR(10) NOT NULL,                   -- Código del insumo
+    nombre VARCHAR(200) NOT NULL,                  -- Nombre genérico
+    marca VARCHAR(50) NOT NULL,                    -- Marca
+    referencia VARCHAR(100),
+    presentacion DECIMAL(10,2) NOT NULL,           -- Presentación (ej: 500 mL)
+    presentacion_cant DECIMAL(10,2) NOT NULL,      -- Cuantas unidades
+    cantidad_total DECIMAL(10,2) NOT NULL,         -- Total disponible (presentacion_cant x presentacion)
+    fecha_adquisicion DATE NOT NULL,
+    fecha_vencimiento DATE,
+    observaciones TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    -- Foreign Keys (reutilizando las mismas tablas auxiliares)
+    tipo_id INT NOT NULL,
+    clasificacion_id INT NOT NULL,
+    unidad_id INT NOT NULL,
+    estado_id INT NOT NULL,
+    almacenamiento_id INT NOT NULL,
+    tipo_recipiente_id INT NOT NULL,
+
+    -- Relaciones
+    FOREIGN KEY (codigo) REFERENCES catalogo_insumos(codigo),
+    FOREIGN KEY (tipo_id) REFERENCES tipo_reactivo(id),
+    FOREIGN KEY (clasificacion_id) REFERENCES clasificacion_sga(id),
+    FOREIGN KEY (unidad_id) REFERENCES unidades(id),
+    FOREIGN KEY (estado_id) REFERENCES estado_fisico(id),
+    FOREIGN KEY (almacenamiento_id) REFERENCES almacenamiento(id),
+    FOREIGN KEY (tipo_recipiente_id) REFERENCES tipo_recipiente(id),
+
+    UNIQUE (codigo, lote) -- asegura que no se duplique lote para el mismo código
+);
+
 
 INSERT IGNORE INTO tipo_reactivo (nombre) VALUES ('Controlado'), ('No controlado');
 
@@ -417,4 +509,14 @@ INSERT INTO catalogo_reactivos (codigo, nombre, tipo_reactivo, clasificacion_sga
 ('M-047', 'Emulsión Huevo Telurito ', 'NO Controlado ', 'NO PELIGRO'),
 ('M-048', 'Agar Patata-Glucosa (PDA)', 'NO Controlado ', 'NO PELIGRO');
 
-
+INSERT INTO catalogo_insumos (codigo, nombre, tipo_insumo, categoria) VALUES
+('I-001', 'Guantes de Nitrilo', 'Protección Personal', 'EPP'),
+('I-002', 'Mascarillas N95', 'Protección Personal', 'EPP'),
+('I-003', 'Batas de Laboratorio', 'Protección Personal', 'EPP'),
+('I-004', 'Pipetas Desechables', 'Material de Laboratorio', 'Consumibles'),
+('I-005', 'Tubos Eppendorf', 'Material de Laboratorio', 'Consumibles'),
+('I-006', 'Placas de Petri', 'Material de Laboratorio', 'Consumibles'),
+('I-007', 'Papel Filtro', 'Material de Laboratorio', 'Consumibles'),
+('I-008', 'Alcohol Isopropílico', 'Limpieza', 'Químicos'),
+('I-009', 'Detergente Enzimático', 'Limpieza', 'Químicos'),
+('I-010', 'Papel Absorbente', 'Limpieza', 'Consumibles');
