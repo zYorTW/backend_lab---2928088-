@@ -59,40 +59,6 @@ const reportesController = {
           NULL as fecha_vencimiento
         FROM papeleria
         WHERE cantidad_existente > 0
-        
-        UNION ALL
-        
-        -- Materiales Volumétricos
-        SELECT 
-          'MATERIAL_VOLUMETRICO' as tipo_producto,
-          id as id_producto,
-          nombre_material as nombre,
-          cantidad,
-          clase as presentacion,
-          marca,
-          referencia,
-          fecha_adquisicion,
-          NULL as ubicacion,
-          NULL as fecha_vencimiento
-        FROM materiales_volumetricos
-        WHERE cantidad > 0
-        
-        UNION ALL
-        
-        -- Equipos
-        SELECT 
-          'EQUIPO' as tipo_producto,
-          id as id_producto,
-          nombre,
-          1 as cantidad,  -- Cada equipo cuenta como 1
-          modelo as presentacion,
-          marca,
-          numero_serie as referencia,
-          fecha_adquisicion,
-          NULL as ubicacion,
-          NULL as fecha_vencimiento
-        FROM equipos
-        ORDER BY tipo_producto, nombre
       `;
       
       const [results] = await pool.query(query);
